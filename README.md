@@ -3,8 +3,6 @@ py-cooperhewitt
 
 Python bindings to the Cooper-Hewitt collections API.
 
-**THESE ARE INCOMPLETE AND A WORK IN PROGRESS.**
-
 They lack some basic things like a `setup.py` but are being made available, now,
 as a reference implementation and will be updated in real-time.
 
