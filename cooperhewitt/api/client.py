@@ -30,6 +30,8 @@ class OAuth2:
 
     def call (self, method, **kwargs):
 
+        logging.debug("calling %s with args %s" % (method, kwargs))
+
         headers = {"Content-type": "application/x-www-form-urlencoded"}
 
         # See notes in __init__ (20130403/straup)
@@ -45,8 +47,6 @@ class OAuth2:
         kwargs['access_token'] = self.access_token
 
         body = urllib.urlencode(kwargs)
-
-        logging.debug("call API with %s" % body)
 
         if self.use_https:
             conn = httplib.HTTPSConnection(self.hostname)
