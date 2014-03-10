@@ -10,13 +10,12 @@ as a reference implementation and will be updated in real-time.
 	import cooperhewitt.api.client
 	import pprint
 
-	# see also: https://collection.cooperhewitt.org/api/oauth2/
-
 	api = cooperhewitt.api.client.OAuth2(ACCESS_TOKEN)
 
-        now = int(time.time())
-        rsp = api.call('api.test.echo', foo='bar', timestamp=now)
-        print pprint.pformat(rsp)
+	now = int(time.time())
+	rsp = api.call('api.test.echo', foo='bar', timestamp=now)
+
+	print pprint.pformat(rsp)
 
 ## See also
 
