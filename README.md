@@ -17,6 +17,10 @@ as a reference implementation and will be updated in real-time.
 
 	print pprint.pformat(rsp)
 
+## TO DO
+
+* Use [py-flamework-api](https://github.com/cooperhewitt/py-flamework-api) as a base class
+
 ## See also
 
 * [Smithsonian Cooper-Hewitt National Design Museum collections website](https://collection.cooperhewitt.org/)
