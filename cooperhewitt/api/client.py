@@ -4,6 +4,8 @@ import base64
 import json
 import logging
 
+from request import encode_multipart_formdata, encode_urlencode
+
 class OAuth2:
 
     def __init__(self, access_token, **kwargs):
@@ -28,32 +30,20 @@ class OAuth2:
 
         self.use_https = kwargs.get('use_https', True)
 
-    def call (self, method, **kwargs):
+    def execute_method(self, method, kwargs, encode=encode_urlencode):
 
         logging.debug("calling %s with args %s" % (method, kwargs))
 
-        headers = {"Content-type": "application/x-www-form-urlencoded"}
-
-        # See notes in __init__ (20130403/straup)
-
-        if self.username and self.password:
-            auth = base64.encodestring("%s:%s" % (self.username, self.password))
-            auth = auth.strip()
-
-            headers["Authorization"] = "Basic %s" % auth
-
         kwargs['method'] = method
-        kwargs['format'] = 'json'
         kwargs['access_token'] = self.access_token
+        
+        (headers, body) = encode(kwargs)
 
-        body = urllib.urlencode(kwargs)
+        url = self.endpoint + '/'
+        logging.debug("calling %s%s" % (self.hostname, url))
 
-        if self.use_https:
-            conn = httplib.HTTPSConnection(self.hostname)
-        else:
-            conn = httplib.HTTPConnection(self.hostname) 
-
-        conn.request('POST', self.endpoint, body, headers)
+        conn = httplib.HTTPSConnection(self.hostname)
+        conn.request('POST', url, body, headers)
 
         rsp = conn.getresponse()
         body = rsp.read()
@@ -69,6 +59,10 @@ class OAuth2:
         # check status here...
 
         return data
+
+    def call (self, method, **kwargs):
+        logging.warning("The 'call' method is deprecated. Please use 'execute_method' instead.")
+        self.execute_method(method, kwargs)
 
 if __name__ == '__main__':
 
@@ -116,7 +110,9 @@ if __name__ == '__main__':
 
     try:
         now = int(time.time())
-        rsp = api.call('api.test.echo', foo='bar', timestamp=now)
+        args = {'foo': 'bar', 'timestamp': now}
+
+        rsp = api.execute_method('api.test.echo', args)
         print pprint.pformat(rsp)
 
     except Exception, e:

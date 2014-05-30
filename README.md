@@ -2,9 +2,6 @@
 
 Python bindings to the Cooper-Hewitt collections API.
 
-They lack some basic things like a `setup.py` but are being made available, now,
-as a reference implementation and will be updated in real-time.
-
 ## Example
 
 	import cooperhewitt.api.client
@@ -13,7 +10,9 @@ as a reference implementation and will be updated in real-time.
 	api = cooperhewitt.api.client.OAuth2(ACCESS_TOKEN)
 
 	now = int(time.time())
-	rsp = api.call('api.test.echo', foo='bar', timestamp=now)
+	args = {'foo': 'bar', 'timestamp': now}
+
+	rsp = api.execute_method('api.test.echo', args)
 
 	print pprint.pformat(rsp)
 
