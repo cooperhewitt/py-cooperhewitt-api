@@ -4,6 +4,8 @@ Python bindings to the Cooper-Hewitt collections API.
 
 ## Example
 
+### Plain vanilla
+
 	import cooperhewitt.api.client
 	import pprint
 
@@ -16,6 +18,22 @@ Python bindings to the Cooper-Hewitt collections API.
 
 	print pprint.pformat(rsp)
 
+### Uploading a file
+
+	import cooperhewitt.api.client
+	import cooperhewitt.api.request
+
+	import pprint
+
+	api = cooperhewitt.api.client.OAuth2(ACCESS_TOKEN)
+
+	now = int(time.time())
+	args = {'file': '/path/to/file'}
+
+	rsp = api.execute_method('api.test.uploadMe', args, cooperhewitt.api.request.encode_multipart_formdata)
+
+	print pprint.pformat(rsp)
+	
 ## TO DO
 
 * Use [py-flamework-api](https://github.com/cooperhewitt/py-flamework-api) as a base class
