@@ -53,8 +53,12 @@ class OAuth2:
         try:
             data = json.loads(body)
         except Exception, e:
+
             logging.error(e)
-            raise Exception, e
+            logging.debug(body)
+            
+            error = { 'code': 000, 'message': 'failed to parse JSON', 'details': body }
+            data = { 'stat': 'error', 'error': error }
 
         # check status here...
 
