@@ -1,12 +1,8 @@
-import urllib
-import httplib
 import base64
 import json
 import logging
-
-from request import encode_multipart_formdata, encode_urlencode
-
 import requests
+from request import encode_multipart_formdata, encode_urlencode
 
 class OAuth2:
 
@@ -31,7 +27,10 @@ class OAuth2:
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
 
-    def execute_method(self, method, data, encode=encode_urlencode):
+    # Note the 'encode' bit - that's not working yet... (20150306/copea)
+    # http://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files
+        
+    def execute_method(self, method, data, encode=None):
 
         logging.debug("calling %s with args %s" % (method, data))
 
