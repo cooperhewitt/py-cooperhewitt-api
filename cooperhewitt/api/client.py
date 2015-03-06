@@ -14,6 +14,7 @@ class OAuth2:
 
         self.hostname = kwargs.get('hostname', 'api.collection.cooperhewitt.org')
         self.endpoint = kwargs.get('endpoint', '/rest')
+        self.proxy = kwargs.get('proxy', None)
 
         logging.debug("setup API to use %s%s" % (self.hostname, self.endpoint))
 
@@ -42,7 +43,16 @@ class OAuth2:
         url = self.endpoint + '/'
         logging.debug("calling %s%s" % (self.hostname, url))
 
-        conn = httplib.HTTPSConnection(self.hostname)
+        if self.proxy:
+
+            url = "https://" + self.hostname + url
+
+            _host, _port = self.proxy.split(":")
+            conn = httplib.HTTPSConnection(_host, _port)
+
+        else:
+            conn = httplib.HTTPSConnection(self.hostname)
+
         conn.request('POST', url, body, headers)
 
         rsp = conn.getresponse()
