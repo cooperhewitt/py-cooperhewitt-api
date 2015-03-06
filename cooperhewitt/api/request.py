@@ -20,12 +20,12 @@ def encode_multipart_formdata(args):
 			else:
 				file_name = 'unknown'
 
-			content_type = get_content_type(filename)
+			content_type = get_content_type(file_name)
 			f = (key, (file_name, value, content_type))
 
 			files.append(f)
 		else:
-			data[k] = v
+			data[key] = value
 
 	# This is so that we can maintain backwards compatibility with
 	# the pre- requests (httplib) versions of this library
