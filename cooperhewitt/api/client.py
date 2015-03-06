@@ -6,6 +6,8 @@ import logging
 
 from request import encode_multipart_formdata, encode_urlencode
 
+import requests
+
 class OAuth2:
 
     def __init__(self, access_token, **kwargs):
@@ -14,8 +16,12 @@ class OAuth2:
 
         self.hostname = kwargs.get('hostname', 'api.collection.cooperhewitt.org')
         self.endpoint = kwargs.get('endpoint', '/rest')
-
+        self.proxy = kwargs.get('proxy', None)
+        
         logging.debug("setup API to use %s%s" % (self.hostname, self.endpoint))
+
+        if self.proxy:
+            logging.debug("setup API to use proxy %s" % self.proxy)
 
         # Strictly speaking not ever necessary until of course it
         # is like when I need to call a dev server or whatever.
@@ -25,28 +31,23 @@ class OAuth2:
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
 
-        # Same same - you should only ever talk to OAuth2 using HTTP
-        # (20130403/straup)
+    def execute_method(self, method, data, encode=encode_urlencode):
 
-        self.use_https = kwargs.get('use_https', True)
+        logging.debug("calling %s with args %s" % (method, data))
 
-    def execute_method(self, method, kwargs, encode=encode_urlencode):
-
-        logging.debug("calling %s with args %s" % (method, kwargs))
-
-        kwargs['method'] = method
-        kwargs['access_token'] = self.access_token
+        data['method'] = method
+        data['access_token'] = self.access_token
         
-        (headers, body) = encode(kwargs)
+        url = "https://" + self.hostname + self.endpoint + '/'
+        logging.debug("calling %s" % url)
 
-        url = self.endpoint + '/'
-        logging.debug("calling %s%s" % (self.hostname, url))
+        more = {}
 
-        conn = httplib.HTTPSConnection(self.hostname)
-        conn.request('POST', url, body, headers)
+        if self.proxy:
+            more["proxies"] = {"https": self.proxy }
 
-        rsp = conn.getresponse()
-        body = rsp.read()
+        rsp = requests.post(url, data=data, **more)
+        body = rsp.text
 
         logging.debug("response is %s" % body)
 
