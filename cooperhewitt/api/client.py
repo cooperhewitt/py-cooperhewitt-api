@@ -45,10 +45,16 @@ class OAuth2:
 
         if self.proxy:
 
-            url = "https://" + self.hostname + url
+            logging.debug("set proxy %s" % self.proxy)
 
             _host, _port = self.proxy.split(":")
-            conn = httplib.HTTPSConnection(_host, _port)
+
+            if _port and int(_port) == 443:
+                conn = httplib.HTTPSConnection(_host, _port)
+            else:
+                conn = httplib.HTTPConnection(_host, _port)
+
+            url = "https://" + self.hostname + url
 
         else:
             conn = httplib.HTTPSConnection(self.hostname)
