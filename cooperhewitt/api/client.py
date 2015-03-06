@@ -55,6 +55,7 @@ class OAuth2:
                 conn = httplib.HTTPConnection(_host, _port)
 
             url = "https://" + self.hostname + url
+            logging.debug("calling %s (because proxy)" % url)
 
         else:
             conn = httplib.HTTPSConnection(self.hostname)
