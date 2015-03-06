@@ -2,6 +2,7 @@ import base64
 import json
 import logging
 import requests
+
 from request import encode_multipart_formdata, encode_urlencode
 
 class OAuth2:
@@ -29,8 +30,10 @@ class OAuth2:
 
     # Note the 'encode' bit - that's not working yet... (20150306/copea)
     # http://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files
-        
-    def execute_method(self, method, data, encode=None):
+    # http://docs.python-requests.org/en/latest/user/advanced/#proxies
+    # http://lukasa.co.uk/2013/07/Python_Requests_And_Proxies/
+
+    def execute_method(self, method, data, encode=encode_urlencode):
 
         logging.debug("calling %s with args %s" % (method, data))
 
@@ -40,12 +43,12 @@ class OAuth2:
         url = "https://" + self.hostname + self.endpoint + '/'
         logging.debug("calling %s" % url)
 
-        more = {}
+        args = encode(data)
 
         if self.proxy:
-            more["proxies"] = {"https": self.proxy }
+            args["proxies"] = {"https": self.proxy }
 
-        rsp = requests.post(url, data=data, **more)
+        rsp = requests.post(url, **args)
         body = rsp.text
 
         logging.debug("response is %s" % body)

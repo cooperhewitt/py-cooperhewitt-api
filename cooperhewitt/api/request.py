@@ -2,10 +2,10 @@ import urllib
 import mimetypes
 
 def encode_multipart_formdata(args):
-	""" Encode upload as multipart/form-data. From http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306 """
-	BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
-	CRLF = '\r\n'
-	L = []
+
+        data = {}
+        files = []
+
 	for (key, value) in args.items():
 		if hasattr(value, 'read'):
 			if hasattr(value, 'name'):
@@ -33,8 +33,8 @@ def encode_multipart_formdata(args):
 	}
 	return (headers, body)
 
-def encode_urlencode(args):
-	return ({"Content-type": "application/x-www-form-urlencoded"},urllib.urlencode(args))
+def encode_urlencode(data):
+        return {'data': data}
 
 def get_content_type(filename):
 	return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
