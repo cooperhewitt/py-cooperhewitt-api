@@ -18,6 +18,22 @@ Python bindings to the Cooper-Hewitt collections API.
 
 	print pprint.pformat(rsp)
 
+### Using a proxy
+
+Just pass a `proxy` argument to the constructor
+
+	import cooperhewitt.api.client
+	import pprint
+
+	api = cooperhewitt.api.client.OAuth2(ACCESS_TOKEN, proxy='http://proxy.example.com:80')
+
+	now = int(time.time())
+	args = {'foo': 'bar', 'timestamp': now}
+
+	rsp = api.execute_method('api.test.echo', args)
+
+	print pprint.pformat(rsp)
+	
 ### Uploading a file
 
 	import cooperhewitt.api.client
