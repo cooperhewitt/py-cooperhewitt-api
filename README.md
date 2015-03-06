@@ -27,11 +27,10 @@ Python bindings to the Cooper-Hewitt collections API.
 
 	api = cooperhewitt.api.client.OAuth2(ACCESS_TOKEN)
 
-	now = int(time.time())
-	args = {'file': '/path/to/file'}
+	fh = open('/path/to/file', 'rb')
+	args = {'file': fh}
 
 	rsp = api.execute_method('api.test.uploadMe', args, cooperhewitt.api.request.encode_multipart_formdata)
-
 	print pprint.pformat(rsp)
 	
 ## TO DO
