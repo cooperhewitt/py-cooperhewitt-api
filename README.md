@@ -33,10 +33,6 @@ Python bindings to the Cooper-Hewitt collections API.
 	rsp = api.execute_method('api.test.uploadMe', args, cooperhewitt.api.request.encode_multipart_formdata)
 	print pprint.pformat(rsp)
 	
-## TO DO
-
-* Use [py-flamework-api](https://github.com/cooperhewitt/py-flamework-api) as a base class
-
 ## See also
 
 * [Smithsonian Cooper-Hewitt National Design Museum collections website](https://collection.cooperhewitt.org/)
