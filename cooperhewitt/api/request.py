@@ -1,5 +1,6 @@
-import urllib
 import mimetypes
+
+# http://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files
 
 def encode_multipart_formdata(args):
 
@@ -8,31 +9,38 @@ def encode_multipart_formdata(args):
 
 	for (key, value) in args.items():
 		if hasattr(value, 'read'):
-			if hasattr(value, 'name'):
-				filename = value.name
-			elif args.has_key('title'):
-				filename = args['title']
-			else:
-				filename = 'unknown'
-			L.append('--' + BOUNDARY)
-			L.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, filename))
-			L.append('Content-Type: %s' % get_content_type(filename))
-			L.append('')
-			L.append(value.read())
-		else:
-			L.append('--' + BOUNDARY)
-			L.append('Content-Disposition: form-data; name="%s"' % key)
-			L.append('')
-			L.append(value)
-	L.append('--' + BOUNDARY + '--')
-	L.append('')
-	body = CRLF.join(L)
-	headers = {
-		'Content-Type': 'multipart/form-data; boundary=%s' % BOUNDARY,
-		'Content-Length': len(body)
-	}
-	return (headers, body)
 
+			file_name = None
+			content_type = None
+
+			if hasattr(value, 'name'):
+				file_name = value.name
+			elif args.has_key('title'):
+				file_name = args['title']
+			else:
+				file_name = 'unknown'
+
+			content_type = get_content_type(filename)
+			f = (key, (file_name, value, content_type))
+
+			files.append(f)
+		else:
+			data[k] = v
+
+	# This is so that we can maintain backwards compatibility with
+	# the pre- requests (httplib) versions of this library
+	# (20150306/copea)
+
+	encoded = {}
+
+	if len(files):
+		encoded['files'] = files
+
+	if len(data.keys()):
+		encoded['data'] = data
+
+	return encoded
+	
 def encode_urlencode(data):
         return {'data': data}
 

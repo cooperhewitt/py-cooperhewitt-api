@@ -28,11 +28,6 @@ class OAuth2:
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
 
-    # Note the 'encode' bit - that's not working yet... (20150306/copea)
-    # http://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files
-    # http://docs.python-requests.org/en/latest/user/advanced/#proxies
-    # http://lukasa.co.uk/2013/07/Python_Requests_And_Proxies/
-
     def execute_method(self, method, data, encode=encode_urlencode):
 
         logging.debug("calling %s with args %s" % (method, data))
@@ -44,6 +39,9 @@ class OAuth2:
         logging.debug("calling %s" % url)
 
         args = encode(data)
+
+        # http://docs.python-requests.org/en/latest/user/advanced/#proxies
+        # http://lukasa.co.uk/2013/07/Python_Requests_And_Proxies/
 
         if self.proxy:
             args["proxies"] = {"https": self.proxy }
