@@ -2,6 +2,16 @@
 
 Python bindings to the Cooper-Hewitt collections API.
 
+## Installation
+
+You can install this by either cloning this repository and running
+
+    	$ python setup.py
+
+or you can use `pip` and just do the following
+
+       $ pip install cooperhewitt.api
+
 ## Example
 
 ### Plain vanilla
