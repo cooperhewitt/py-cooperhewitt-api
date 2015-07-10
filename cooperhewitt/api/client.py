@@ -30,21 +30,7 @@ class OAuth2:
 
     def execute_method(self, method, data, encode=encode_urlencode):
 
-        logging.debug("calling %s with args %s" % (method, data))
-
-        data['method'] = method
-        data['access_token'] = self.access_token
-        
-        url = "https://" + self.hostname + self.endpoint + '/'
-        logging.debug("calling %s" % url)
-
-        args = encode(data)
-
-        # http://docs.python-requests.org/en/latest/user/advanced/#proxies
-        # http://lukasa.co.uk/2013/07/Python_Requests_And_Proxies/
-
-        if self.proxy:
-            args["proxies"] = {"https": self.proxy }
+        url, args = self.prepare_request(method, data, encode)
 
         rsp = requests.post(url, **args)
         body = rsp.text
@@ -64,6 +50,42 @@ class OAuth2:
         # check status here...
 
         return data
+
+    def execute_method_multi(self, multi, size=10):
+
+        req = []
+
+        for details in multi:
+
+            method, data, encode = multi
+            prepped = self.prepare_request(method, data, encode)
+
+            req.append(prepped)
+
+        # moooooooooooooooon language...
+
+        rs = [ requests.async.post(url, **args) for url, args in prepped]
+        print rs
+
+    def prepare_request(self, method, data, , encode=encode_urlencode):
+
+        logging.debug("calling %s with args %s" % (method, data))
+
+        data['method'] = method
+        data['access_token'] = self.access_token
+        
+        url = "https://" + self.hostname + self.endpoint + '/'
+        logging.debug("calling %s" % url)
+
+        args = encode(data)
+
+        # http://docs.python-requests.org/en/latest/user/advanced/#proxies
+        # http://lukasa.co.uk/2013/07/Python_Requests_And_Proxies/
+
+        if self.proxy:
+            args["proxies"] = {"https": self.proxy }
+
+        return (url, args)
 
     def call (self, method, **kwargs):
         logging.warning("The 'call' method is deprecated. Please use 'execute_method' instead.")
