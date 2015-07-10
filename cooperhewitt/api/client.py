@@ -2,6 +2,7 @@ import base64
 import json
 import logging
 import requests
+import grequests
 
 from request import encode_multipart_formdata, encode_urlencode
 
@@ -33,41 +34,27 @@ class OAuth2:
         url, args = self.prepare_request(method, data, encode)
 
         rsp = requests.post(url, **args)
-        body = rsp.text
+        return self.parse_response(rsp)
 
-        logging.debug("response is %s" % body)
-
-        try:
-            data = json.loads(body)
-        except Exception, e:
-
-            logging.error(e)
-            logging.debug(body)
-            
-            error = { 'code': 000, 'message': 'failed to parse JSON', 'details': body }
-            data = { 'stat': 'error', 'error': error }
-
-        # check status here...
-
-        return data
+    # See also: https://github.com/kennethreitz/grequests
 
     def execute_method_multi(self, multi, size=10):
 
-        req = []
+        prepped = []
 
         for details in multi:
-
-            method, data, encode = multi
-            prepped = self.prepare_request(method, data, encode)
-
-            req.append(prepped)
+            url, args = self.prepare_request(*details)
+            prepped.append((url, args))
 
         # moooooooooooooooon language...
 
-        rs = [ requests.async.post(url, **args) for url, args in prepped]
-        print rs
+        req_multi = [ grequests.post(url, **args) for url, args in prepped]
+        rsp_multi = grequests.map(req_multi)
 
-    def prepare_request(self, method, data, , encode=encode_urlencode):
+        for r in rsp_multi:
+            yield self.parse_response(r)
+
+    def prepare_request(self, method, data, encode=encode_urlencode):
 
         logging.debug("calling %s with args %s" % (method, data))
 
@@ -86,6 +73,25 @@ class OAuth2:
             args["proxies"] = {"https": self.proxy }
 
         return (url, args)
+
+    def parse_response(self, rsp):
+
+        body = rsp.text
+        logging.debug("response is %s" % body)
+
+        try:
+            data = json.loads(body)
+        except Exception, e:
+
+            logging.error(e)
+            logging.debug(body)
+            
+            error = { 'code': 000, 'message': 'failed to parse JSON', 'details': body }
+            data = { 'stat': 'error', 'error': error }
+
+        # check status here...
+
+        return data
 
     def call (self, method, **kwargs):
         logging.warning("The 'call' method is deprecated. Please use 'execute_method' instead.")
