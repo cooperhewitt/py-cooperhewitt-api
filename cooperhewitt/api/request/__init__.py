@@ -1,3 +1,6 @@
+# https://pythonhosted.org/setuptools/setuptools.html#namespace-packages
+__import__('pkg_resources').declare_namespace(__name__)
+
 import mimetypes
 
 # http://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files

@@ -6,14 +6,13 @@ packages = find_packages()
 
 setup(
     name='cooperhewitt.api',
-    namespace_packages=['cooperhewitt'],
+    namespace_packages=['cooperhewitt', 'cooperhewitt.api', 'cooperhewitt.api.client', 'cooperhewitt.api.request'],
     version='0.4.4',
     description='Simple Python wrapper for Cooper-Hewitt API',
     author='Smithsonian Cooper-Hewitt National Design Museum',
     url='https://github.com/cooperhewitt/py-cooperhewitt-api',
     install_requires=[
         'requests',
-        'grequests',
         ],
     packages=packages,
     scripts=[],

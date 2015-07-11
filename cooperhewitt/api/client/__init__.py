@@ -1,10 +1,13 @@
+# https://pythonhosted.org/setuptools/setuptools.html#namespace-packages
+__import__('pkg_resources').declare_namespace(__name__)
+
 import base64
 import json
 import logging
 import requests
 import grequests
 
-from request import encode_multipart_formdata, encode_urlencode
+from cooperhewitt.api.request import encode_multipart_formdata, encode_urlencode
 
 class OAuth2:
 

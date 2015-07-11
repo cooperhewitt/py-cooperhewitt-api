@@ -1,4 +1,4 @@
-# py-cooperhewitt
+# py-cooperhewitt-api
 
 Python bindings to the Cooper-Hewitt collections API.
 
@@ -61,6 +61,7 @@ Just pass a `proxy` argument to the constructor
 	
 ## See also
 
+* [py-cooperhewitt-api-multiclient](https://github.com/cooperhewitt/py-cooperhewitt-api-multiclient)
 * [Smithsonian Cooper-Hewitt National Design Museum collections website](https://collection.cooperhewitt.org/)
 * [Smithsonian Cooper-Hewitt National Design Museum collections API](https://collection.cooperhewitt.org/api/)
 
