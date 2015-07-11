@@ -5,7 +5,6 @@ import base64
 import json
 import logging
 import requests
-import grequests
 
 from cooperhewitt.api.request import encode_multipart_formdata, encode_urlencode
 
@@ -38,24 +37,6 @@ class OAuth2:
 
         rsp = requests.post(url, **args)
         return self.parse_response(rsp)
-
-    # See also: https://github.com/kennethreitz/grequests
-
-    def execute_method_multi(self, multi, size=10):
-
-        prepped = []
-
-        for details in multi:
-            url, args = self.prepare_request(*details)
-            prepped.append((url, args))
-
-        # moooooooooooooooon language...
-
-        req_multi = [ grequests.post(url, **args) for url, args in prepped]
-        rsp_multi = grequests.map(req_multi)
-
-        for r in rsp_multi:
-            yield self.parse_response(r)
 
     def prepare_request(self, method, data, encode=encode_urlencode):
 
